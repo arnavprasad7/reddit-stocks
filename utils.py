@@ -2,12 +2,14 @@ import praw
 import json
 import pandas as pd
 
+import datetime
+
 from nltk.tokenize import word_tokenize
 
 
 def get_posts(reddit, subreddit, limit=20, title_conditions=[""]):
     """
-    Get data from the "hot" posts from a particualar subreddit.
+    Get data from the "hot" posts from a particular subreddit.
 
     Inputs:
     - reddit: PRAW reddit instance
@@ -20,6 +22,7 @@ def get_posts(reddit, subreddit, limit=20, title_conditions=[""]):
         - "title"
         - "id"
         - "comments"
+        - "time"
     """
 
     subreddit = reddit.subreddit(subreddit)
@@ -36,6 +39,7 @@ def get_posts(reddit, subreddit, limit=20, title_conditions=[""]):
                 post["title"] = submission.title
                 post["id"] = submission.id
                 post["comments"] = submission.comments
+                post["time"] = datetime.fromtimestamp(submission.created_utc)
 
                 posts.append(post)   
 
