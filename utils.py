@@ -4,6 +4,10 @@ import pandas as pd
 
 from datetime import datetime
 
+import numpy as np
+
+from textblob import TextBlob
+
 from nltk.tokenize import word_tokenize
 
 
@@ -44,3 +48,22 @@ def get_posts(reddit, subreddit, limit=20, title_conditions=[""]):
                 posts.append(post)   
 
     return posts
+
+def getPolarity(text):
+    return TextBlob(text).sentiment.polarity
+
+def sentiment_score(x):
+    """
+    Input:
+    - mean of weighted polarities (any real number, positive or negative)
+
+    Output:
+    - Weighted sentiment score, mapped between [-1, 1], corresponding to negative or positive responses
+    """
+    
+    if x >= 0:
+        score = 1 - np.exp(-x)
+    else:
+        score = np.exp(x) - 1
+
+    return score
