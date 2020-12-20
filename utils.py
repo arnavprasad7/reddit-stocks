@@ -2,7 +2,7 @@ import praw
 import json
 import pandas as pd
 
-import datetime
+from datetime import datetime
 
 from nltk.tokenize import word_tokenize
 
