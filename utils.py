@@ -51,6 +51,9 @@ def get_posts(reddit, subreddit, limit=20, title_conditions=[""]):
 def getPolarity(text):
     return TextBlob(text).sentiment.polarity
 
+def getSubjectivity(text):
+    return TextBlob(text).sentiment.subjectivity
+
 def sentiment_score(x):
     """
     Input:
