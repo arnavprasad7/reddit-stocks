@@ -1,14 +1,13 @@
 import praw 
 import json
 import pandas as pd
-
-from datetime import datetime
-
+from datetime import datetime, timedelta
 import numpy as np
-
 from textblob import TextBlob
-
 from nltk.tokenize import word_tokenize
+import requests
+import traceback
+import time
 
 
 def get_posts(reddit, subreddit, limit=20, title_conditions=[""]):
@@ -68,19 +67,20 @@ def sentiment_score(x):
 
     return score
 
+def date_to_utc(date):
+    """
+    Input:
+    - datetime object
+
+    Output:
+    - Date in UTC
+    """
+
+    date = str(date)
+
+    return int(time.mktime(datetime.strptime(date, "%Y-%m-%d").timetuple()))
 
 
-
-
-
-#Using pushshift
-
-
-import requests
-from datetime import datetime
-import traceback
-import time
-import pandas as pd
 
 
 def download_from_pushshift(output_filename, object_type, chosen_subreddit, date):
@@ -151,6 +151,27 @@ def download_from_pushshift(output_filename, object_type, chosen_subreddit, date
     print("Saved {} {}s from {}".format(count, object_type, datetime.fromtimestamp(day).strftime("%Y-%m-%d")))
     handle.close()
    
+
+def create_url(subreddit, date):
+    """
+    Inputs:
+    - subreddit: name of subreddit
+    - date: datetime object for required day
+
+    Output:
+    - formatted_url: in the pushshift request format
+    """
+
+    before = date.date()
+
+    after = (date + timedelta(days=1)).date()
+
+    #Template URL for using pushshift
+    url = "https://api.pushshift.io/reddit/{}/search?limit=1000&sort_type=score&sort=desc&subreddit={}&after={}&before={}"
+
+    formatted_url = url.format("comment", subreddit, date_to_utc(before), date_to_utc(after))
+
+    return formatted_url
 
 
 
